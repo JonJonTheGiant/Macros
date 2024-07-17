@@ -1,0 +1,73 @@
+Dim swApp As SldWorks.SldWorks
+Dim swModel As SldWorks.ModelDoc2
+Dim swCustPropMgr As SldWorks.CustomPropertyManager
+Dim sHostName As String
+Dim AltHostName As String
+
+
+
+
+Sub main()
+
+    Set swApp = Application.SldWorks
+    
+    Set swModel = swApp.ActiveDoc
+
+    ' Get Host Name / Get Computer Name
+    sHostName = Environ$("computername")
+    
+    AltHostName = "Default Server Name"
+    ' Replace HostName with DA name
+    If sHostName = "VMAPPDEV1GNEUSW" Then
+        AltHostName = "DEVNODE1"
+    ElseIf sHostName = "VMAPPDEV2GNEUSW" Then
+        AltHostName = "DEVNODE2"
+    ElseIf sHostName = "VMAPPUAT2CTEUSW" Then
+        AltHostName = "PERFNODE1"
+    ElseIf sHostName = "VMAPPUAT3CTEUSW" Then
+        AltHostName = "PERFNODE2"
+    ElseIf sHostName = "VMAPPINT2CTEUSW" Then
+        AltHostName = "PRODNODE1"
+    ElseIf sHostName = "VMAPPINT3CTEUSW" Then
+        AltHostName = "PRODNODE2"
+    ElseIf sHostName = "VMAPPINT4CTEUSW" Then
+        AltHostName = "PRODNODE3"
+    ElseIf sHostName = "VMAPPINT5CTEUSW" Then
+        AltHostName = "PRODNODE4"
+    ElseIf sHostName = "VMAPPINT6CTEUSW" Then
+        AltHostName = "PRODNODE5"
+    ElseIf sHostName = "VMAPPINT7CTEUSW" Then
+        AltHostName = "PRODNODE6"
+    ElseIf sHostName = "VMAPPPRD1CITEUW" Then
+        AltHostName = "TKATNODE1"
+    ElseIf sHostName = "VMAPPPRD2CITEUW" Then
+        AltHostName = "TKATNODE2"
+    ElseIf sHostName = "VMAPPPRD3CITEUW" Then
+        AltHostName = "TKATNODE3"
+    ElseIf sHostName = "VMAPPPRD4CITEUW" Then
+        AltHostName = "TKATNODE4"
+    ElseIf sHostName = "VMAPPPRD5CITEUW" Then
+        AltHostName = "TKATNODE5"
+    ElseIf sHostName = "VMAPPPRD6CITEUW" Then
+        AltHostName = "TKATNODE6"
+    ElseIf sHostName = "AZCFGIT03" Then
+        AltHostName = "TKATNODE7"
+    ElseIf sHostName = "AZCFGIT05" Then
+        AltHostName = "TKATNODE8"
+    End If
+    
+    ' Adding Alternate Host Name to property
+    swModel.CustomInfo2(Custom, "CompInfo") = AltHostName
+    
+    
+    
+    
+    
+
+    ' swModel.AddCustomInfo2 "CompInfo", swCustomInfoText, sHostName
+
+
+End Sub
+
+
+

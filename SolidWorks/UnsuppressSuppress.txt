@@ -1,0 +1,107 @@
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+Sub main()
+    Y = MsgBox("This Macro works by:" & vbNewLine & "1) Finding the Parent Assembly File" & vbNewLine & "2) Unsupressing all parts" & vbNewLine & "3) Supressing all parts" & vbNewLine & "_ _ _ _ _ _ _ _ _ _ _ _" & vbNewLine & vbNewLine & "Optional: You can select 1 part as your ""SKELETON"" to exclude from supression." & vbNewLine & "1) First select the part in the Feature Tree." & vbNewLine & "2) Run the macro." & vbNewLine & "(note: select only ONE (1) part, or NO parts)", vbOKOnly + vbInformation, "Supression Macro - How It Works")
+    
+    ' Initialize Part Name String and Id
+    Dim Part_Name As String
+    Dim Part_ID As String
+    Dim Part_Path As String
+    Dim Parts_Match As Boolean
+    
+    
+    ' Response
+    Dim Response As Variant
+    
+    ' Setup SolidWorks App
+    Set swApp = Application.SldWorks
+    Set swModel = swApp.ActiveDoc
+    
+    ' Gettign Current Configuration
+    Set swConfMgr = swModel.ConfigurationManager
+    Set swConf = swConfMgr.ActiveConfiguration
+    
+    ' Getting Root Component
+    Set swRootComp = swConf.GetRootComponent3(True)
+    Root_Name_Prompt = "Parent Assembly: """ & swRootComp.Name2 & """"
+    Response = MsgBox(Root_Name_Prompt & vbNewLine & "Is this the correct Parent Assembly Name?", vbYesNo + vbQuestion, "Supression Macro - Confirm Root Name")
+    
+    ' Asks if this is the correct Parent Assembly
+    If Response = vbNo Then
+    ' Root name cannot be found. Leaving Sub
+        X = MsgBox("Cannot Find Parent Assembly Name. Terminating Macro.", vbCritical, "Supression Macro - ERROR")
+        Exit Sub
+    End If
+
+    ' Put the Children of the root file in an Array named "KidsArray"
+    KidsArray = swRootComp.GetChildren
+    
+    'Getting Selected Part
+    Dim Selected_Part As Variant
+    Dim swSelMgr As SldWorks.SelectionMgr
+    Set swSelMgr = swModel.SelectionManager
+    
+    Set Selected_Part = swSelMgr.GetSelectedObjectsComponent2(1)
+    If Selected_Part Is Nothing Then
+        a = MsgBox("SKELETON: No Skeleton selected." & vbNewLine & "_ _ _ _ _ " & vbNewLine & vbNewLine & "Beginning Unsupression and Supression." & vbNewLine & "This may take a while based on the size of the assembly.", vbOKOnly + vbInformation, "Supression Macro - Checkpoint")
+    Else:
+        T = Selected_Part.Name2
+        a = MsgBox("SKELETON: """ & T & """" & vbNewLine & "_ _ _ _ _ " & vbNewLine & vbNewLine & "Beginning Unsupression and Supression." & vbNewLine & "This may take a while based on the size of the assembly.", vbOKOnly + vbInformation, "Supression Macro - Checkpoint")
+    End If
+    
+    
+    ' Unsupress All
+    For Each kids In KidsArray
+        Parts_Match = False
+        Part_Name = kids.Name2
+        Part_ID = kids.GetID
+        Part_Path = Part_Name & "@" & swRootComp.Name2
+
+        ' Check if there is a part to pass
+        If Selected_Part Is Nothing Then
+        Else:
+           If Selected_Part.Name2 = Part_Name Then Parts_Match = True
+        End If
+
+        ' If Parts don't match then proceed
+        If Parts_Match = False Then
+'            MsgBox "Name: " & Part_Name & "        " & "ID: " & Part_ID
+'            MsgBox Part_Path
+            boolstatus = swModel.Extension.SelectByID2(Part_Path, "COMPONENT", 0, 0, 0, False, 0, Nothing, 0)
+            swModel.EditUnsuppress2
+            swModel.ClearSelection2 True
+        End If
+   ' Next
+    
+    ' Supress All
+   ' For Each kids In KidsArray
+     '   Parts_Match = False
+     '   Part_Name = kids.Name2
+      '  Part_ID = kids.GetID
+      '  Part_Path = Part_Name & "@" & swRootComp.Name2
+
+        ' Check if there is a part to pass
+       ' If Selected_Part Is Nothing Then
+       ' Else:
+        '    If Selected_Part.Name2 = Part_Name Then Parts_Match = True
+       ' End If
+
+        ' If Parts don't match then proceed
+       ' If Parts_Match = False Then
+
+       '     boolstatus = swModel.Extension.SelectByID2(Part_Path, "COMPONENT", 0, 0, 0, False, 0, Nothing, 0)
+      '      swModel.EditSuppress2
+      '     swModel.ClearSelection2 True
+       ' End If
+    Next
+    
+    c = MsgBox("Complete", vbInformation + vbOKOnly, "Supression Macro")
+    
+    
+    
+
+End Sub
+
