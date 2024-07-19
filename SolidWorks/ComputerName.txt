@@ -8,7 +8,9 @@ Dim encodedArray() As Variant
 Dim Letter As Variant
 
 Sub main()
-' This macro finds a computer host name, and from a premade encoder, it converts the name to an encoded host name
+    On Error GoTo ErrorHandler
+
+    ' This macro finds a computer host name, and from a premade encoder, it converts the name to an encoded host name
 
     ' General SolidWorks setup
     Set swApp = Application.SldWorks
@@ -40,6 +42,9 @@ Sub main()
     
     ' Adding Encoded Host Name to property
     swModel.CustomInfo2(Custom, "CompInfo") = encodedHostName
+    
+Exit Sub
+ErrorHandler:
 
 End Sub
 
