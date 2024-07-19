@@ -39,7 +39,7 @@ Sub main()
     Next i
     
     ' Adding Encoded Host Name to property
-    swModel.CustomInfo2(Custom, "CompInfo") = encodedHostNsame
+    swModel.CustomInfo2(Custom, "CompInfo") = encodedHostName
 
 End Sub
 
