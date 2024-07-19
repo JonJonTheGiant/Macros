@@ -2,70 +2,49 @@ Dim swApp As SldWorks.SldWorks
 Dim swModel As SldWorks.ModelDoc2
 Dim swCustPropMgr As SldWorks.CustomPropertyManager
 Dim sHostName As String
-Dim AltHostName As String
-
-
-
+Dim encodedHostName As String
+Dim actualArray() As Variant
+Dim encodedArray() As Variant
+Dim Letter As Variant
 
 Sub main()
+    On Error GoTo ErrorHandler
 
+    ' This macro finds a computer host name, and from a premade encoder, it converts the name to an encoded host name
+
+    ' General SolidWorks setup
     Set swApp = Application.SldWorks
-    
     Set swModel = swApp.ActiveDoc
-
+    
+    ' Populate 2 lists to compare encode Computer Name
+    actualArray = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+    encodedArray = Array("#", "Q", "J", "&", "9", "$", "*", "3", "?", "4", "Y", "W", "2", "M", "D", "X", "1", "6", "@", "E", "!", "%", "U", "N", "^", "/", "~", "Z", "O", "K", "5", "A", "8", "7", "B", "L")
+    
     ' Get Host Name / Get Computer Name
     sHostName = Environ$("computername")
     
-    AltHostName = "Default Server Name"
-    ' Replace HostName with DA name
-    If sHostName = "VMAPPDEV1GNEUSW" Then
-        AltHostName = "DEVNODE1"
-    ElseIf sHostName = "VMAPPDEV2GNEUSW" Then
-        AltHostName = "DEVNODE2"
-    ElseIf sHostName = "VMAPPUAT2CTEUSW" Then
-        AltHostName = "PERFNODE1"
-    ElseIf sHostName = "VMAPPUAT3CTEUSW" Then
-        AltHostName = "PERFNODE2"
-    ElseIf sHostName = "VMAPPINT2CTEUSW" Then
-        AltHostName = "PRODNODE1"
-    ElseIf sHostName = "VMAPPINT3CTEUSW" Then
-        AltHostName = "PRODNODE2"
-    ElseIf sHostName = "VMAPPINT4CTEUSW" Then
-        AltHostName = "PRODNODE3"
-    ElseIf sHostName = "VMAPPINT5CTEUSW" Then
-        AltHostName = "PRODNODE4"
-    ElseIf sHostName = "VMAPPINT6CTEUSW" Then
-        AltHostName = "PRODNODE5"
-    ElseIf sHostName = "VMAPPINT7CTEUSW" Then
-        AltHostName = "PRODNODE6"
-    ElseIf sHostName = "VMAPPPRD1CITEUW" Then
-        AltHostName = "TKATNODE1"
-    ElseIf sHostName = "VMAPPPRD2CITEUW" Then
-        AltHostName = "TKATNODE2"
-    ElseIf sHostName = "VMAPPPRD3CITEUW" Then
-        AltHostName = "TKATNODE3"
-    ElseIf sHostName = "VMAPPPRD4CITEUW" Then
-        AltHostName = "TKATNODE4"
-    ElseIf sHostName = "VMAPPPRD5CITEUW" Then
-        AltHostName = "TKATNODE5"
-    ElseIf sHostName = "VMAPPPRD6CITEUW" Then
-        AltHostName = "TKATNODE6"
-    ElseIf sHostName = "AZCFGIT03" Then
-        AltHostName = "TKATNODE7"
-    ElseIf sHostName = "AZCFGIT05" Then
-        AltHostName = "TKATNODE8"
-    End If
+    ' Initialize empty encoded name
+    encodedHostName = ""
+            
+    ' For-loop cycles through Comupter Name chars and produces encoded name
+    For i = 1 To Len(sHostName)
+        
+        ' The letter to find encode
+        Letter = Mid(sHostName, i, 1)
+        
+        ' For-loop finds letter in normal/Actual array and appends it's encoded counterpart to the end of the encoded host name
+        For k = 0 To 35  ' 36 is the length of the Actual array
+            If actualArray(k) = Letter Then
+                encodedHostName = encodedHostName & encodedArray(k)
+            End If
+        Next k
+    Next i
     
-    ' Adding Alternate Host Name to property
-    swModel.CustomInfo2(Custom, "CompInfo") = AltHostName
+    ' Adding Encoded Host Name to property
+    swModel.CustomInfo2(Custom, "CompInfo") = encodedHostName
     
-    
-    
-    
-    
-
-    ' swModel.AddCustomInfo2 "CompInfo", swCustomInfoText, sHostName
-
+Exit Sub
+ErrorHandler:
 
 End Sub
 
