@@ -1,1 +1,3 @@
 # Macros
+
+git alias = Macros
